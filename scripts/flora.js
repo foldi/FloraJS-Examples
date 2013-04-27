@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 /* Version: 1.0.0 */
-/* Build time: April 27, 2013 10:53:50 */
+/* Build time: April 27, 2013 11:35:13 */
 /** @namespace */
 var Flora = {}, exports = Flora;
 
@@ -1717,12 +1717,25 @@ Mover.prototype.mouseover = function(e) {
 
 Mover.prototype.mousedown = function(e) {
 
-  var target = e.target;
+  var touch, target = e.target || e.srcElement; // <= IE* uses srcElement
+
+  if (e.changedTouches) {
+    touch = e.changedTouches[0];
+  }
+
+  if (e.pageX && e.pageY) {
+    this.offsetX = e.pageX - target.offsetLeft;
+    this.offsetY = e.pageY - target.offsetTop;
+  } else if (e.clientX && e.clientY) {
+    this.offsetX = e.clientX - target.offsetLeft;
+    this.offsetY = e.clientY - target.offsetTop;
+  } else if (touch) {
+    this.offsetX = touch.pageX - target.offsetLeft;
+    this.offsetY = touch.pageY - target.offsetTop;
+  }
 
   this.isPressed = true;
   this.isMouseOut = false;
-  this.offsetX = e.pageX - target.offsetLeft;
-  this.offsetY = e.pageY - target.offsetTop;
 };
 
 /**
@@ -1732,14 +1745,26 @@ Mover.prototype.mousedown = function(e) {
  */
 Mover.prototype.mousemove = function(e) {
 
-  var x, y;
+  var x, y, touch;
 
   if (this.isPressed) {
 
     this.isMouseOut = false;
 
-    x = e.pageX - this.world.el.offsetLeft;
-    y = e.pageY - this.world.el.offsetTop;
+    if (e.changedTouches) {
+      touch = e.changedTouches[0];
+    }
+
+    if (e.pageX && e.pageY) {
+      x = e.pageX - this.world.el.offsetLeft;
+      y = e.pageY - this.world.el.offsetTop;
+    } else if (e.clientX && e.clientY) {
+      x = e.clientX - this.world.el.offsetLeft;
+      y = e.clientY - this.world.el.offsetTop;
+    } else if (touch) {
+      x = touch.pageX - this.world.el.offsetLeft;
+      y = touch.pageY - this.world.el.offsetTop;
+    }
 
     if (exports.Utils.mouseIsInsideWorld(this.world)) {
       this.location = new exports.Vector(x, y);
