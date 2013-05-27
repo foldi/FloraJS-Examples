@@ -16,34 +16,20 @@
   <script src="scripts/flora.js" type="text/javascript" charset="utf-8"></script>
   </head>
   <body>
+    <div id='worldA'></div>
     <script type="text/javascript" charset="utf-8">
 
       Burner.System.init(function() {
 
         this.add('ParticleSystem', {
-          lifespan: -1,
           startColor: [255, 255, 255],
           particleOptions: {
             maxSpeed: 3
           }
         });
 
-        this.add('Repeller', {
-          draggable: true,
-          location: function () {
-            return new Burner.Vector(this.world.width / 2 - 120, this.world.height / 2 - 120);
-          }
-        });
-
-        this.add('Repeller', {
-          draggable: true,
-          location: function () {
-            return new Burner.Vector(this.world.width / 2 + 120,this.world.height / 2 + 120);
-          }
-        });
-
         this.add('Caption', {
-          text: 'Particle System and Repellers: drag repellers to affect particle system',
+          text: 'DOM world',
           opacity: 0.4,
           borderColor: 'transparent',
           position: 'top center'
@@ -54,10 +40,15 @@
           borderColor: 'transparent',
           position: 'bottom center'
         });
+
       }, {
+        boundToWindow: false,
+        width: 320,
+        height: 480,
+        color: [60, 60, 60],
         gravity: new Burner.Vector(0, 0),
         c: 0
-      });
+      }, document.getElementById('worldA'));
     </script>
   </body>
 </html>
