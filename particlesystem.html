@@ -22,8 +22,13 @@
 
         this.add('ParticleSystem', {
           startColor: [255, 255, 255],
+          burst: 2,
+          burstRate: 3,
+          emitRadius: 50,
           particleOptions: {
-            maxSpeed: 3
+            maxSpeed: 3,
+            width: 50,
+            height: 50
           }
         });
 

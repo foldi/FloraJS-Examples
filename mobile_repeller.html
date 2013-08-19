@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="keywords" content="JavaScript, Framework, Animation, Natural, System" />
+  <meta name="description" content="FloraJS simulates natural systems using JavaScript." />
+  <meta name="viewport" content = "user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name='apple-mobile-web-app-capable' content='yes' />
+  <meta property='og:title' content='FloraJS' />
+  <meta property='og:url' content='http://www.florajs.com' />
+  <meta property='og:site_name' content='FloraJS' />
+  <title>FloraJS | Simulate natural systems with JavaScript</title>
+  <link rel="stylesheet" href="css/burner.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/flora.css" type="text/css" charset="utf-8" />
+  <script src="scripts/burner.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts/flora.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body style='background-color: rgb(210, 200, 190); border-width: 0;'>
+    <div id='worldA'></div>
+    <script type="text/javascript" charset="utf-8">
+
+      var windowSize = Flora.Utils.getWindowSize();
+
+      Burner.System.init(function() {
+
+        // eye should be a satellite; arms
+        // when ships are inside they exclaim some random regex
+
+        var i, randomNumber = Flora.Utils.getRandomNumber,
+          map = Flora.Utils.map,
+          world = Burner.System.firstWorld();
+
+        //
+
+        var totalPetals = 8,
+            petalSize = window.innerWidth / 4;
+
+        var petalCenter = this.add('Point', {
+          isStatic: true,
+          colorMode: 'hsl',
+          color: [9, 69, 100],
+          opacity: 0.5,
+          borderRadius: 100,
+          borderWidth: petalSize / 4,
+          borderStyle: 'solid',
+          borderColor: [63, 100, 50],
+          width: petalSize,
+          height: petalSize,
+          location: new Burner.Vector(world.width / 2, world.height / 2)
+        });
+
+        //
+
+        for (i = 0; i < totalPetals; i++) {
+
+          var loc = new Burner.Vector(world.width / 2, world.height / 2),
+              offset = new Burner.Vector(world.width / 2, world.height / 2);
+
+          offset.normalize();
+          offset.rotate(Flora.Utils.degreesToRadians(i * (360 / totalPetals)));
+          offset.mult(petalSize / 1.5);
+          loc.add(offset);
+
+          this.add('Point', {
+            isStatic: true,
+            colorMode: 'hsl',
+            color: [9, 69, 71 + i], // rgb [232, 146, 130]
+            opacity: 0.25,
+            borderRadius: 100,
+            width: petalSize,
+            height: petalSize,
+            borderWidth: 0,
+            location: loc
+          });
+        }
+
+        //
+
+        var satelliteSize = window.innerWidth / 4;
+
+        var satellite = this.add('Agent', {
+          type: 'satellite',
+          pointToDirection: true,
+          opacity: 1,
+          width: satelliteSize,
+          height: satelliteSize,
+          mass: 500,
+          colorMode: 'rgb',
+          color: [232, 146, 130], // hsl [9, 69, 71]
+          borderRadius: 100,
+          borderWidth: satelliteSize / 2,
+          borderStyle: 'double',
+          borderColor: [48, 16, 16], // hsl [0, 67, 19]
+          boxShadowOffset: new Burner.Vector(2, 1),
+          boxShadowSpread: 2,
+          boxShadowColor: [232, 146, 130], // hsl [9, 69, 71]
+          zIndex: 10,
+          followMouse: true
+        });
+
+        var beforeStepSatArms = function() {
+          var parentAngle = exports.Utils.radiansToDegrees(Math.atan2(this.parent.velocity.y, this.parent.velocity.x));
+          this.angle = map(this.parent.velocity.mag(), 0, 1, 45, 0) * this.dir;
+          this.angle += parentAngle;
+        };
+
+        var frontArm = this.add('Mover', {
+          parent: satellite,
+          pointToDirection: false,
+          pointToParentDirection: true,
+          checkWorldEdges: false,
+          angle: 45,
+          isStatic: true,
+          color: [48, 16, 16],
+          borderRadius: 0,
+          width: 2,
+          height: satelliteSize * 2,
+          offsetDistance: 0,
+          zIndex: 1,
+          dir: 1,
+          beforeStep: beforeStepSatArms
+        });
+
+        var frontHandA = this.add('Mover', {
+          parent: frontArm,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [255, 255, 255],
+          borderRadius: 100,
+          borderWidth: 2,
+          borderStyle: 'solid',
+          borderColor: [48, 16, 16],
+          width: satelliteSize * 0.5,
+          height: satelliteSize * 0.5,
+          offsetDistance: satelliteSize,
+          offsetAngle: 90,
+          zIndex: 20,
+          beforeStep: function() {
+
+          }
+        });
+
+        var frontFingerA = this.add('Mover', {
+          parent: frontHandA,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [48, 16, 16],
+          borderRadius: 0,
+          width: 2,
+          height: satelliteSize * 0.25,
+          offsetDistance: 0,
+          offsetAngle: 0,
+          zIndex: 20,
+          beforeStep: function() {
+            var vel = this.parent.parent.parent.velocity.mag() * 10;
+            this.angle += vel;
+          }
+        });
+
+
+        var backFootA = this.add('Mover', {
+          parent: frontArm,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [255, 255, 80],
+          borderRadius: 100,
+          borderWidth: 2,
+          borderStyle: 'solid',
+          borderColor: [48, 16, 16],
+          width: 20,
+          height: 20,
+          offsetDistance: -satelliteSize,
+          offsetAngle: 90,
+          zIndex: 20,
+          beforeStep: function() {
+
+          }
+        });
+
+        var backToeA = this.add('Mover', {
+          parent: backFootA,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [48, 16, 16],
+          borderRadius: 0,
+          width: 2,
+          height: satelliteSize * 0.5,
+          offsetDistance: 0,
+          offsetAngle: 0,
+          zIndex: 20,
+          beforeStep: function() {
+            var vel = this.parent.parent.parent.velocity.mag();
+            this.angle += vel;
+          }
+        });
+
+        //
+
+        var backArm = this.add('Mover', {
+          parent: satellite,
+          pointToDirection: false,
+          pointToParentDirection: true,
+          checkWorldEdges: false,
+          angle: -45,
+          isStatic: true,
+          color: [48, 16, 16],
+          borderRadius: 0,
+          width: 2,
+          height: satelliteSize * 2,
+          offsetDistance: 0,
+          zIndex: 1,
+          dir: -1,
+          beforeStep: beforeStepSatArms
+        });
+
+        var frontHandB = this.add('Mover', {
+          parent: backArm,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [255, 255, 255],
+          borderRadius: 100,
+          borderWidth: 2,
+          borderStyle: 'solid',
+          borderColor: [48, 16, 16],
+          width: satelliteSize * 0.15,
+          height: satelliteSize * 0.15,
+          offsetDistance: -satelliteSize,
+          offsetAngle: 90,
+          zIndex: 20,
+          beforeStep: function() {
+
+          }
+        });
+
+        var frontFingerB = this.add('Mover', {
+          parent: frontHandB,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [48, 16, 16],
+          borderRadius: 0,
+          width: 2,
+          height: satelliteSize * 0.06,
+          offsetDistance: 0,
+          offsetAngle: 0,
+          zIndex: 20,
+          beforeStep: function() {
+            var vel = this.parent.parent.parent.velocity.mag() * 10;
+            this.angle += vel;
+          }
+        });
+
+        var backFootB = this.add('Mover', {
+          parent: backArm,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [255, 255, 80],
+          borderRadius: 100,
+          borderWidth: 2,
+          borderStyle: 'solid',
+          borderColor: [48, 16, 16],
+          width: 20,
+          height: 20,
+          offsetDistance: satelliteSize,
+          offsetAngle: 90,
+          zIndex: 20,
+          beforeStep: function() {
+
+          }
+        });
+
+        var backToeB = this.add('Mover', {
+          parent: backFootB,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [48, 16, 16],
+          borderRadius: 0,
+          width: 2,
+          height: satelliteSize * 0.5,
+          offsetDistance: 0,
+          offsetAngle: 0,
+          zIndex: 20,
+          beforeStep: function() {
+            var vel = -this.parent.parent.parent.velocity.mag();
+            this.angle += vel;
+          }
+        });
+
+        this.connector = Burner.System.add('Connector', {
+          parentA: petalCenter,
+          parentB: satellite,
+          zIndex: 1,
+          opacity: 0.5,
+          borderColor: [232, 146, 130]
+        });
+
+        // create pallette for agent
+
+        var plShipTop = new Flora.ColorPalette();
+
+        plShipTop.addColor({
+          min: 12,
+          max: 24,
+          startColor: [243, 76, 7],
+          endColor: [203, 36, 0]
+        });
+
+        var totalAgents = 4;
+
+        var minWidth = 20,
+            maxWidth = 40;
+
+        for (i = 0; i < totalAgents; i++) {
+          var size = randomNumber(minWidth, maxWidth);
+          var agent = this.add('Agent', {
+            flocking: true,
+            followMouse: true,
+            controlCamera: false,
+            width: size,
+            height: size,
+            mass: map(size, minWidth, maxWidth, minWidth * 2, maxWidth * 2),
+            color: plShipTop.getColor(),
+            borderRadius: 100,
+            borderWidth: 2,
+            borderStyle: 'solid',
+            borderColor: [200, 255, 237],
+            connector: null,
+            zIndex: 100,
+            location: function() {
+              var loc = new Burner.Vector(this.world.width / 2, this.world.height / 2),
+                  offset = new Burner.Vector(this.world.width / 2, this.world.height / 2);
+              offset.normalize();
+              offset.rotate(randomNumber(0, 360));
+              offset.mult(randomNumber(0, this.world.width / 4));
+              return loc.add(offset);
+            },
+            beforeStep: function() {
+
+              var satellite = Burner.System.getAllItemsByAttribute('type', 'satellite')[0],
+                  inside = Flora.Utils.isInside(this, satellite);
+
+              // Check to create or destroy a word bubble.
+              if (inside && !this.connector) {
+                this.connector = Burner.System.add('Connector', {
+                  parentA: this,
+                  parentB: satellite,
+                  zIndex: 10,
+                  borderColor: [255, 255, 255]
+                });
+              } else if (!inside && this.connector) {
+                Burner.System.destroyItem(this.connector);
+                this.connector = null;
+              }
+            }
+          });
+
+          this.add('Mover', { // ship middle
+            parent: agent,
+            isStatic: true,
+            color: [255, 255, 80],
+            borderRadius: 100,
+            width: map(size, minWidth, maxWidth, minWidth * 0.35, maxWidth * 0.35),
+            height: map(size, minWidth, maxWidth, minWidth * 0.35, maxWidth * 0.35),
+            offsetDistance: 0,
+            zIndex: 101
+          });
+
+          var plShipBottom = new Flora.ColorPalette();
+
+          plShipBottom.addColor({
+            min: 12,
+            max: 24,
+            startColor: [4, 199, 100],
+            endColor: [0, 159, 60]
+          });
+
+          var width = map(size, 10, 30, minWidth * 0.5, maxWidth * 0.5);
+          this.add('Mover', {
+            parent: agent,
+            pointToParentDirection: true,
+            isStatic: true,
+            color: plShipBottom.getColor(),
+            borderRadius: 100,
+            width: width,
+            height: width * 2,
+            offsetDistance: width / 2,
+            zIndex: 101
+          });
+        }
+
+        //
+        var size = randomNumber(minWidth, maxWidth);
+        var controlAgent = this.add('Agent', {
+          controlCamera: true,
+          flocking: true,
+          followMouse: true,
+          width: size,
+          height: size,
+          mass: map(size, minWidth, maxWidth, minWidth * 2, maxWidth * 2),
+          color: plShipTop.getColor(),
+          borderRadius: 100,
+          borderWidth: 2,
+          borderStyle: 'solid',
+          borderColor: [200, 255, 237],
+          connector: null,
+          zIndex: 100,
+          location: function() {
+            return new Burner.Vector(this.world.width / 2, this.world.height / 2);
+          },
+          beforeStep: function() {
+
+            var satellite = Burner.System.getAllItemsByAttribute('type', 'satellite')[0],
+                inside = Flora.Utils.isInside(this, satellite);
+
+            // Check to create or destroy a word bubble.
+            if (inside && !this.connector) {
+              this.connector = Burner.System.add('Connector', {
+                parentA: this,
+                parentB: satellite,
+                zIndex: 10,
+                borderColor: [255, 255, 255]
+              });
+            } else if (!inside && this.connector) {
+              Burner.System.destroyItem(this.connector);
+              this.connector = null;
+            }
+          }
+        });
+
+          this.add('Mover', { // ship middle
+            parent: controlAgent,
+            isStatic: true,
+            color: [255, 255, 80],
+            borderRadius: 100,
+            width: map(size, minWidth, maxWidth, minWidth * 0.35, maxWidth * 0.35),
+            height: map(size, minWidth, maxWidth, minWidth * 0.35, maxWidth * 0.35),
+            offsetDistance: 0,
+            zIndex: 101
+          });
+
+          var plShipBottom = new Flora.ColorPalette();
+
+          plShipBottom.addColor({
+            min: 12,
+            max: 24,
+            startColor: [4, 199, 100],
+            endColor: [0, 159, 60]
+          });
+
+          var width = map(size, 10, 30, minWidth * 0.5, maxWidth * 0.5);
+          this.add('Mover', {
+            parent: controlAgent,
+            pointToParentDirection: true,
+            isStatic: true,
+            color: plShipBottom.getColor(),
+            borderRadius: 100,
+            width: width,
+            height: width * 2,
+            offsetDistance: width / 2,
+            zIndex: 101
+          });
+
+        //
+
+        var totalWalkers = 16;
+        for (var i = 0; i < totalWalkers; i++) {
+          var walker = this.add('Walker', {
+            zIndex: 2,
+            maxSpeed: 5
+          });
+
+          var spinner = this.add('Mover', {
+          parent: walker,
+          pointToDirection: false,
+          pointToParentDirection: false,
+          checkWorldEdges: false,
+          angle: 0,
+          isStatic: false,
+          color: [255, 255, 255],
+          borderRadius: 0,
+          width: 6,
+          height: 20,
+          offsetDistance: 0,
+          offsetAngle: 0,
+          zIndex: 1,
+          beforeStep: function() {
+            var vel = -this.parent.velocity.mag() * 10;
+            this.angle += vel;
+          }
+        });
+        }
+
+      }, {
+        gravity: new Burner.Vector(0, 0),
+        c: 0,
+        color: [220, 210, 200],
+        boundToWindow: false,
+        width: windowSize.width * 3,
+        height: windowSize.height * 3
+      },
+        document.getElementById('worldA')
+      );
+    </script>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta name="keywords" content="JavaScript, Framework, Animation, Natural, System" />
+  <meta name="description" content="FloraJS simulates natural systems using JavaScript." />
+  <meta name="viewport" content = "user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name='apple-mobile-web-app-capable' content='yes' />
+  <meta property='og:title' content='FloraJS' />
+  <meta property='og:url' content='http://www.florajs.com' />
+  <meta property='og:site_name' content='FloraJS' />
+  <title>FloraJS | Simulate natural systems with JavaScript</title>
+  <link rel="stylesheet" href="css/burner.css" type="text/css" charset="utf-8" />
+  <link rel="stylesheet" href="css/flora.css" type="text/css" charset="utf-8" />
+  <script src="scripts/burner.js" type="text/javascript" charset="utf-8"></script>
+  <script src="scripts/flora.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <script type="text/javascript" charset="utf-8">
+
+      Burner.System.init(function() {
+
+        var pl = [], size, mass, pIndex,
+            randomNumber = Flora.Utils.getRandomNumber,
+            map = Flora.Utils.map,
+            world = Burner.System.firstWorld(),
+            totalMovers = 20, maxSize = world.width / 4;
+
+        /**
+         * Create color palettes.
+         */
+        pl.push(new Flora.ColorPalette());
+
+        pl[0].addColor({
+          min: 12,
+          max: 24,
+          startColor: [95, 198, 217],
+          endColor: [56, 77, 112]
+        });
+
+        pl.push(new Flora.ColorPalette());
+
+        pl[1].addColor({
+          min: 12,
+          max: 24,
+          startColor: [199, 104, 71],
+          endColor: [255, 108, 57]
+        });
+
+        /**
+         * Create border palettes.
+         */
+        var bl = new Flora.BorderPalette();
+
+        bl.addBorder({
+          min: 12,
+          max: 24,
+          style: 'solid'
+        }).addBorder({
+          min: 12,
+          max: 24,
+          style: 'dotted'
+        }).addBorder({
+          min: 12,
+          max: 24,
+          style: 'dashed'
+        }).addBorder({
+          min: 12,
+          max: 24,
+          style: 'inset'
+        });
+
+        /**
+         * Create Movers.
+         */
+        for (var i = 0; i < totalMovers; i++) {
+          if (i) {
+            size = map(i, 0, totalMovers, 10, maxSize);
+          } else {
+            size = maxSize * 2;
+          }
+          plIndex = randomNumber(0, 1);
+          this.add('Mover', {
+            width: size,
+            height: size,
+            mass: size,
+            color: pl[plIndex].getColor(),
+            borderRadius: 100,
+            borderWidth: size / 4,
+            borderStyle: bl.getBorder(),
+            borderColor: pl[plIndex].getColor()
+          });
+        }
+
+      }, {
+        color: [255, 255, 255]
+      });
+    </script>
+  </body>
+</html>

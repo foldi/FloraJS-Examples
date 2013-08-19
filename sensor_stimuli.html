@@ -18,97 +18,97 @@
   <body>
     <script type="text/javascript" charset="utf-8">
 
-    Burner.System.init(function() {
+      Burner.System.init(function() {
 
-      this.add('Stimulus', {
-        type: 'heat',
-        draggable: true,
-        location: function () {
-          return new Burner.Vector(this.world.width * 0.25, this.world.height * 0.15);
-        }
+        this.add('Stimulus', {
+          type: 'heat',
+          draggable: true,
+          location: function () {
+            return new Burner.Vector(this.world.width * 0.25, this.world.height * 0.15);
+          }
+        });
+
+        this.add('Stimulus', {
+          type: 'heat',
+          draggable: true,
+          location: function () {
+            return new Burner.Vector(this.world.width * 0.85, this.world.height * 0.15);
+          }
+        });
+
+        this.add('Stimulus', {
+          type: 'heat',
+          draggable: true,
+          location: function () {
+            return new Burner.Vector(this.world.width * 0.85, this.world.height * 0.85);
+          }
+        });
+
+        this.add('Stimulus', {
+          type: 'heat',
+          draggable: true,
+          location: function () {
+            return new Burner.Vector(this.world.width * 0.15, this.world.height * 0.75);
+          }
+        });
+
+        this.add('Stimulus', {
+          type: 'cold',
+          draggable: true,
+          location: function () {
+            return new Burner.Vector(this.world.width * 0.5, this.world.height * 0.5);
+          }
+        });
+
+        this.add('Liquid', {
+          draggable: true,
+          location: function () {
+            return new Burner.Vector(this.world.width * 0.45, this.world.height * 0.8);
+          }
+        });
+
+        this.add('Liquid', {
+          draggable: true,
+          location: function () {
+            return new Burner.Vector(this.world.width * 0.65, this.world.height * 0.2);
+          }
+        });
+
+        this.add('Agent', {
+          sensors: [
+            this.add('Sensor', {
+              type: 'heat',
+              behavior: 'COWARD'
+            }),
+           this.add('Sensor', {
+              type: 'cold',
+              behavior: 'ACCELERATE'
+            })
+          ],
+          velocity: new Burner.Vector(1, 0.5),
+          minSpeed: 1,
+          mass: 10,
+          motorSpeed: 4
+        });
+
+        //
+
+        this.add('Caption', {
+          text: 'Sensor, Stimuli and Proximity Objects: Drag objects into the Agent\'s path',
+          opacity: 0.4,
+          borderColor: 'transparent',
+          position: 'top center'
+        });
+
+        this.add('InputMenu', {
+          opacity: 0.4,
+          borderColor: 'transparent',
+          position: 'bottom center'
+        });
+      }, {
+        gravity: new Burner.Vector(),
+        c: 0
       });
-
-      this.add('Stimulus', {
-        type: 'heat',
-        draggable: true,
-        location: function () {
-          return new Burner.Vector(this.world.width * 0.85, this.world.height * 0.15);
-        }
-      });
-
-      this.add('Stimulus', {
-        type: 'heat',
-        draggable: true,
-        location: function () {
-          return new Burner.Vector(this.world.width * 0.85, this.world.height * 0.85);
-        }
-      });
-
-      this.add('Stimulus', {
-        type: 'heat',
-        draggable: true,
-        location: function () {
-          return new Burner.Vector(this.world.width * 0.15, this.world.height * 0.75);
-        }
-      });
-
-      this.add('Stimulus', {
-        type: 'cold',
-        draggable: true,
-        location: function () {
-          return new Burner.Vector(this.world.width * 0.5, this.world.height * 0.5);
-        }
-      });
-
-      this.add('Liquid', {
-        draggable: true,
-        location: function () {
-          return new Burner.Vector(this.world.width * 0.45, this.world.height * 0.8);
-        }
-      });
-
-      this.add('Liquid', {
-        draggable: true,
-        location: function () {
-          return new Burner.Vector(this.world.width * 0.65, this.world.height * 0.2);
-        }
-      });
-
-      this.add('Agent', {
-        sensors: [
-          this.add('Sensor', {
-            type: 'heat',
-            behavior: 'COWARD'
-          }),
-         this.add('Sensor', {
-            type: 'cold',
-            behavior: 'ACCELERATE'
-          })
-        ],
-        velocity: new Burner.Vector(1, 0.5),
-        minSpeed: 1,
-        mass: 10,
-        motorSpeed: 4
-      });
-
-      //
-
-      this.add('Caption', {
-        text: 'Sensor, Stimuli and Proximity Objects: Drag objects into the Agent\'s path',
-        opacity: 0.4,
-        borderColor: 'transparent',
-        position: 'top center'
-      });
-
-      this.add('InputMenu', {
-        opacity: 0.4,
-        borderColor: 'transparent',
-        position: 'bottom center'
-      });
-    }, {
-      gravity: new Burner.Vector(),
-      c: 0
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
