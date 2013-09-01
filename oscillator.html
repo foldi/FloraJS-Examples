@@ -16,7 +16,12 @@
   <script src="scripts/flora.js" type="text/javascript" charset="utf-8"></script>
   </head>
   <body>
-  <script type="text/javascript" charset="utf-8">
+    <script type="text/javascript" charset="utf-8">
+
+      var world = new Burner.World(document.body, {
+        gravity: new Burner.Vector(),
+        c: 0
+      });
 
       Burner.System.init(function() {
 
@@ -36,10 +41,7 @@
           borderColor: 'transparent',
           position: 'bottom center'
         });
-      }, {
-        gravity: new Burner.Vector(),
-        c: 0
-      });
+      }, world);
     </script>
   </body>
 </html>

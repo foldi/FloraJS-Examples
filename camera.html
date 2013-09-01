@@ -18,6 +18,14 @@
   <body>
   <script type="text/javascript" charset="utf-8">
 
+    var world = new Burner.World(document.body, {
+      gravity: new Burner.Vector(),
+      c: 0,
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: [100, 100, 100]
+    });
+
     Burner.System.init(function() {
 
       this.add('Stimulus', {
@@ -105,13 +113,7 @@
         borderColor: 'transparent',
         position: 'bottom center'
       });
-    }, {
-      gravity: new Burner.Vector(),
-      c: 0,
-      borderWidth: 1,
-      borderStyle: 'dashed',
-      borderColor: [100, 100, 100]
-    });
+    }, world);
   </script>
 </body>
 </html>

@@ -18,6 +18,11 @@
   <body>
     <script type="text/javascript" charset="utf-8">
 
+      var world = new Burner.World(document.body, {
+        gravity: new Burner.Vector(),
+        c: 0
+      });
+
       Burner.System.init(function() {
 
         this.add('ParticleSystem', {
@@ -45,10 +50,7 @@
           position: 'bottom center'
         });
 
-      }, {
-        gravity: new Burner.Vector(0, 1),
-        c: 0
-      });
+      }, world);
     </script>
   </body>
 </html>

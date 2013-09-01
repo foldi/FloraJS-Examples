@@ -18,6 +18,10 @@
   <body>
     <script type="text/javascript" charset="utf-8">
 
+      var world = new Burner.World(document.body, {
+        color: [255, 255, 255]
+      });
+
       Burner.System.init(function() {
 
         var pl = [], size, mass, pIndex,
@@ -91,10 +95,7 @@
             borderColor: pl[plIndex].getColor()
           });
         }
-
-      }, {
-        color: [255, 255, 255]
-      });
+      }, world);
     </script>
   </body>
 </html>

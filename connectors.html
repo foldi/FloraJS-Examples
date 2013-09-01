@@ -18,30 +18,32 @@
   <body>
   <script type="text/javascript" charset="utf-8">
 
-      Burner.System.init(function() {
+    var world = new Burner.World(document.body, {
+      gravity: new Burner.Vector(),
+      c: 0
+    });
 
-        var walkerA = this.add('Point'),
-            walkerB = this.add('Walker', {width: 50, height: 50}),
-            walkerC = this.add('Walker', {width: 50, height: 50});
+    Burner.System.init(function() {
 
-        this.add('Connector', {
-          parentA: walkerA,
-          parentB: walkerB
-        });
+      var walkerA = this.add('Point'),
+          walkerB = this.add('Walker', {width: 50, height: 50}),
+          walkerC = this.add('Walker', {width: 50, height: 50});
 
-        this.add('Connector', {
-          parentA: walkerB,
-          parentB: walkerC
-        });
-
-        this.add('Connector', {
-          parentA: walkerC,
-          parentB: walkerA
-        });
-      }, {
-        gravity: new Burner.Vector(),
-        c: 0
+      this.add('Connector', {
+        parentA: walkerA,
+        parentB: walkerB
       });
+
+      this.add('Connector', {
+        parentA: walkerB,
+        parentB: walkerC
+      });
+
+      this.add('Connector', {
+        parentA: walkerC,
+        parentB: walkerA
+      });
+    }, world);
   </script>
 </body>
 </html>

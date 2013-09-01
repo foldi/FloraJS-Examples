@@ -21,6 +21,15 @@
 
       var windowSize = Flora.Utils.getWindowSize();
 
+      var world = new Burner.World(document.getElementById('worldA'), {
+        gravity: new Burner.Vector(0, 0),
+        c: 0,
+        color: [220, 210, 200],
+        boundToWindow: false,
+        width: windowSize.width * 3,
+        height: windowSize.height * 3
+      });
+
       Burner.System.init(function() {
 
         // eye should be a satellite; arms
@@ -513,16 +522,7 @@
         });
         }
 
-      }, {
-        gravity: new Burner.Vector(0, 0),
-        c: 0,
-        color: [220, 210, 200],
-        boundToWindow: false,
-        width: windowSize.width * 3,
-        height: windowSize.height * 3
-      },
-        document.getElementById('worldA')
-      );
+      }, world);
     </script>
   </body>
 </html>
